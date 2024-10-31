@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Cardtemplate from "../../components/Cardtemplate";
 import Navbar2 from "../../components/Navbar/Navbar2";
@@ -115,14 +114,12 @@ const Dashbord = () => {
   };
 
   const handleDrawerClick = (item) => {
-    console.log(item)
     setIsDrawerOpen(!isDrawerOpen);
   };
 
   const handleSwipeClose = (e) => {
     const touch = e.changedTouches[0];
     if (touch.clientX > window.innerWidth - 50) {
-      // Right swipe detect karenge
       setIsDrawerOpen(false);
     }
   };
@@ -173,7 +170,7 @@ const Dashbord = () => {
         const localImageURL = URL.createObjectURL(file);
         setImageURL(localImageURL);
         setLocalImage(false);
-        console.log("Image selected for preview:", localImageURL);
+        // console.log("Image selected for preview:", localImageURL);
       }
     };
     input.click();
@@ -272,7 +269,6 @@ const Dashbord = () => {
           if (snapshot.exists()) {
             const data = snapshot.val();
             setCardData(data);
-            console.log(data);
             setTitle(data.title || "Sample Title");
             setMessage(data.message || "This is a sample message.");
             setSelectedColor(data.selectedColor || "white");

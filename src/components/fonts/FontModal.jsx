@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { ChromePicker } from "react-color";
+import { HexColorPicker } from "react-colorful";
 
 const FontModal = ({
   onSelectFont,
@@ -16,8 +15,8 @@ const FontModal = ({
     { name: "playwright", style: "font-playwright" },
   ];
 
-  const [textColor, setTextColor] = useState("#000");
-  const [strokeColor, setStrokeColor] = useState("#fff");
+  const [textColor, setTextColor] = useState("#000000");
+  const [strokeColor, setStrokeColor] = useState("#ffffff");
   const [sampleText, setSampleText] = useState("Sample Text");
   const [sampleFont, setSampleFont] = useState("");
   const [textSize, setTextSize] = useState("16");
@@ -29,13 +28,13 @@ const FontModal = ({
   };
 
   const handleTextColorChange = (color) => {
-    setTextColor(color.hex);
-    onSettextColor(color.hex);
+    setTextColor(color);
+    onSettextColor(color);
   };
 
   const handleStrokeColorChange = (color) => {
-    setStrokeColor(color.hex);
-    onSetTextStrokeColor(color.hex);
+    setStrokeColor(color);
+    onSetTextStrokeColor(color);
   };
 
   const handleTextSizeChange = (e) => {
@@ -50,7 +49,7 @@ const FontModal = ({
 
   return (
     <div className="z-20 top-0 left-0 w-full h-full bg-opacity-50 flex justify-center items-center">
-      <div className=" px-2 overflow-y-auto">
+      <div className="px-2 overflow-y-auto">
         <h2 className="text-md absolute top-0 z-10 left-0 bg-blue-950 text-white w-full py-3 mx-0 font-semibold mb-4 text-center">
           Choose a Font
         </h2>
@@ -58,31 +57,19 @@ const FontModal = ({
         <div className="grid justify-center items-center grid-cols-1 gap-5 md:mt-[120%] sm:mt-[70%] w-full">
           {/* Text Color Picker */}
           <div className="mb-4 mt-80">
-            <h4 className="text-center mb-2 font-bold text-white">
-              Text Color
-            </h4>
-            <ChromePicker
-              color={textColor}
-              onChangeComplete={handleTextColorChange}
-            />
+            <h4 className="text-center mb-2 font-bold text-white">Text Color</h4>
+            <HexColorPicker color={textColor} onChange={handleTextColorChange} />
           </div>
 
           {/* Stroke Color Picker */}
           <div className="mb-4">
-            <h4 className="text-center mb-2 font-bold text-white">
-              Stroke Color
-            </h4>
-            <ChromePicker
-              color={strokeColor}
-              onChangeComplete={handleStrokeColorChange}
-            />
+            <h4 className="text-center mb-2 font-bold text-white">Stroke Color</h4>
+            <HexColorPicker color={strokeColor} onChange={handleStrokeColorChange} />
           </div>
 
           {/* Text Size Input */}
           <div className="mb-4">
-            <h4 className="text-center mb-2 font-bold text-white">
-              Text Size (px)
-            </h4>
+            <h4 className="text-center mb-2 font-bold text-white">Text Size (px)</h4>
             <input
               type="number"
               value={textSize.replace("px", "")}
@@ -94,9 +81,7 @@ const FontModal = ({
 
           {/* Stroke Size Input */}
           <div className="mb-4">
-            <h4 className="text-center mb-2 font-bold text-white">
-              Stroke Size (px)
-            </h4>
+            <h4 className="text-center mb-2 font-bold text-white">Stroke Size (px)</h4>
             <input
               type="number"
               value={strokeSize.replace("px", "")}

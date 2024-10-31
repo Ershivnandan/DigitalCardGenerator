@@ -3,20 +3,22 @@ import { useEffect, useState } from "react";
 import Cardtemplate from "../../components/Cardtemplate";
 import Navbar2 from "../../components/Navbar/Navbar2";
 import { toast } from "react-toastify";
-import { auth, storage, firestore } from "../../utils/firebase";
+import { auth, storage, firestore, db } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+
 import { useAuth } from "../../utils/AuthProvider";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import ColorPickerModal from "../../components/colorpicker/ColorpickerModal";
 import ImageSelectionModal from "../../components/bgImage/ImageSelectionModal";
 import TextEditModal from "../../components/editText/TextEditModal";
 import FontModal from "../../components/fonts/FontModal";
+import { ref as dbRef, get, update, set } from "firebase/database";
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 const Dashbord = () => {
   const { currentUser } = useAuth();
@@ -187,61 +189,6 @@ const Dashbord = () => {
     setSelectedColor("");
   };
 
-  const updateCard = async () => {
-    const userId = currentUser.uid;
-    const cardDocRef = doc(firestore, "cards", userId);
-    let downloadURL;
-
-    if (!imageFile && !localImage) {
-      toast.error("Please upload an image first!");
-      return;
-    }
-
-    try {
-      const docSnap = await getDoc(cardDocRef);
-      let oldImageURL = "";
-      if (docSnap.exists()) {
-        oldImageURL = docSnap.data().imageURL;
-      }
-
-      if (imageFile) {
-        if (oldImageURL) {
-          const oldImageRef = ref(storage, oldImageURL);
-          await deleteObject(oldImageRef);
-        }
-
-        const storageRef = ref(storage, `images/${userId}/${imageFile.name}`);
-        await uploadBytes(storageRef, imageFile);
-        downloadURL = await getDownloadURL(storageRef);
-      } else {
-        downloadURL = oldImageURL;
-      }
-
-      const newCardData = {
-        title: title,
-        message: message,
-        selectedColor: selectedColor,
-        selectedGradient: selectedGradient,
-        backgroundImage: backgroundImage,
-        selectedFont: selectedFont,
-        textColor: textColor,
-        textSize: textSize,
-        textStrokeSize: textStrokeSize,
-        textStrokeColor: textStrokeColor,
-        borderImage: borderImage,
-        imageURL: downloadURL,
-        userId: currentUser.uid,
-      };
-
-      await setDoc(cardDocRef, newCardData);
-
-      toast.success("Card saved successfully!");
-    } catch (error) {
-      console.error("Error saving card to Firebase:", error);
-      toast.error("Error saving card, please try again.");
-    }
-  };
-
   const handleLogout = () => {
     auth
       .signOut()
@@ -254,20 +201,97 @@ const Dashbord = () => {
       });
   };
 
+  const updateCard = async () => {
+    const userId = currentUser.uid;
+    const cardDbRef = dbRef(db, `cards/${userId}`);
+    let downloadURL;
+
+    if (!imageFile && !localImage) {
+      toast.error("Please upload an image first!");
+      return;
+    }
+
+    try {
+      const snapshot = await get(cardDbRef);
+      let oldImageURL = "";
+      if (snapshot.exists()) {
+        oldImageURL = snapshot.val().imageURL;
+      }
+
+      if (imageFile) {
+        if (oldImageURL) {
+          const oldImageRef = storageRef(storage, oldImageURL);
+          await deleteObject(oldImageRef);
+        }
+
+        const newStorageRef = storageRef(
+          storage,
+          `images/${userId}/${imageFile.name}`
+        );
+        await uploadBytes(newStorageRef, imageFile);
+        downloadURL = await getDownloadURL(newStorageRef);
+      } else {
+        downloadURL = oldImageURL;
+      }
+
+      // Updated card data
+      const newCardData = {
+        title,
+        message,
+        selectedColor,
+        selectedGradient,
+        backgroundImage,
+        selectedFont,
+        textColor,
+        textSize,
+        textStrokeSize,
+        textStrokeColor,
+        borderImage,
+        imageURL: downloadURL,
+        userId,
+      };
+
+      // Update or set data in Realtime Database
+      await set(cardDbRef, newCardData);
+
+      toast.success("Card saved successfully!");
+    } catch (error) {
+      console.error("Error saving card to Firebase:", error);
+      toast.error("Error saving card, please try again.");
+    }
+  };
+
   useEffect(() => {
     const fetchUserCardData = async () => {
-      if (currentUser) {
-        const docRef = doc(firestore, "cards", currentUser.uid);
-        const docSnap = await getDoc(docRef);
+      try {
+        if (currentUser) {
+          const cardRef = dbRef(db, `cards/${currentUser.uid}`);
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setCardData(data);
-          setImageURL(data.imageURL);
-          setLocalImage(true);
-        } else {
-          console.log("No such document!");
+          const snapshot = await get(cardRef);
+
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            setCardData(data);
+            console.log(data);
+            setTitle(data.title || "Sample Title");
+            setMessage(data.message || "This is a sample message.");
+            setSelectedColor(data.selectedColor || "white");
+            setSelectedGradient(data.selectedGradient || "");
+            setBackgroundImage(data.backgroundImage || "");
+            setSelectedFont(data.selectedFont || "");
+            setTextColor(data.textColor || "black");
+            setTextSize(data.textSize || "12px");
+            setTextStrokeColor(data.textStrokeColor || "white");
+            setTextStrokeSize(data.textStrokeSize || "2px");
+            setBorderImage(data.borderImage || "");
+            setImageURL(data.imageURL || "");
+            setLocalImage(true);
+          } else {
+            console.log("No such document!");
+          }
         }
+      } catch (error) {
+        console.log("Fetching issue", error.message);
       }
     };
 

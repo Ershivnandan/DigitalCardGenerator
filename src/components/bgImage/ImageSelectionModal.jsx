@@ -10,6 +10,7 @@ const ImageSelectionModal = ({ images, onSelectImage, }) => {
               key={index}
               src={image}
               alt={`Background ${index}`}
+              loading="lazy"
               className="cursor-pointer z-0 w-full h-auto rounded border border-black shadow-md shadow-black hover:scale-105 duration-100"
               onClick={() => {
                 onSelectImage(image);

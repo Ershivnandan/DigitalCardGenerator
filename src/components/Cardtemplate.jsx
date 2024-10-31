@@ -12,9 +12,21 @@ const Cardtemplate = ({
   borderImage,
   textStrokeColor,
 }) => {
+
+  const calculateFontSize = (size) => {
+    const baseSize = size; 
+  
+    const mobileFactor = 0.7; 
+    const mobileSize = baseSize * mobileFactor; 
+
+    return window.innerWidth < 768 ? mobileSize : baseSize;
+  };
+
   const appliedStyle = gradient
     ? { background: gradient }
     : { backgroundColor: color };
+
+  const responsiveTextSize = calculateFontSize(textSize);
 
   return (
     <div className="relative border flex justify-center md:min-h-[95vh] sm:min-h-[80vh] min-h-[50vh] -mt-24 md:mt-0 items-center md:w-[80%] h-full w-full rounded-lg overflow-hidden">
@@ -30,7 +42,7 @@ const Cardtemplate = ({
           src={borderImage}
           loading="lazy"
           alt="Border"
-          className="absolute inset-0 z-10 w-full h-full  object-fill opacity-50"
+          className="absolute inset-0 z-10 w-full h-full object-fill opacity-50"
         />
       )}
 
@@ -53,9 +65,9 @@ const Cardtemplate = ({
         {/* Title */}
         {title && (
           <h4
-            className={`md:text-3xl  text-white font-bold text-center drop-shadow-2xl`}
+            className={`md:text-3xl text-white font-bold text-center drop-shadow-2xl`}
             style={{
-              fontSize: `${10+textSize}px`,
+              fontSize: `${responsiveTextSize}px`,
               color: textColor,
               WebkitTextStroke: `${textStrokeSize} ${textStrokeColor}`,
               WebkitTextFillColor: textColor,
@@ -67,9 +79,9 @@ const Cardtemplate = ({
 
         {/* Message */}
         <p
-          className={`text-center md:text-xl text-[${textSize}] text-white font-semibold p-4 md:mt-5 mt-5 mb-5 drop-shadow-2xl`}
+          className={`text-center md:text-xl text-white font-semibold p-4 md:mt-5 mt-5 mb-5 drop-shadow-2xl`}
           style={{
-            fontSize: `${textSize-8}px`,
+            fontSize: `${responsiveTextSize - 8}px`, // Adjusted for message
             color: textColor,
             maxWidth: "80%",
             WebkitTextStroke: `${textStrokeSize} ${textStrokeColor}`,

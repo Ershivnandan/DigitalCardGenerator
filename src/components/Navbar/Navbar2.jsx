@@ -27,12 +27,15 @@ const menuIcons = [
   <FiLogOut />,
 ];
 
-const Navbar2 = ({ onMenuItemClick, onMobileMenuItemClick }) => {
+const Navbar2 = ({ onMenuItemClick, onMobileMenuItemClick, setDrawerOpen }) => {
   const handleClick = (item) => {
     onMenuItemClick(item);
+    setDrawerOpen(false); // Close the drawer when an item is clicked
   };
+
   const handleMobileClick = (item) => {
     onMenuItemClick(item);
+    setDrawerOpen(false); // Close the drawer when an item is clicked
     onMobileMenuItemClick(item);
   };
 
@@ -55,16 +58,16 @@ const Navbar2 = ({ onMenuItemClick, onMobileMenuItemClick }) => {
       </nav>
 
       {/* Mobile view: top icon navigation */}
-      <div className="absolute w-full top-2  md:hidden flex justify-between px-4">
+      <div className="absolute w-full top-2 md:hidden flex justify-between px-4 z-20">
         <div
           onClick={() => handleClick("Add image")}
-          className="text-3xl text-white font-bold"
+          className="text-3xl text-white font-bold shadow-lg shadow-slate-100/50"
         >
           <GrDocumentUpload />
         </div>
         <div
           onClick={() => handleClick("Logout")}
-          className="text-3xl text-white font-bold"
+          className="text-3xl text-white font-bold shadow-lg shadow-slate-100/50"
         >
           <FiLogOut />
         </div>
@@ -77,6 +80,7 @@ const Navbar2 = ({ onMenuItemClick, onMobileMenuItemClick }) => {
             <li
               className="cursor-pointer flex flex-col justify-center items-center w-full text-white hover:scale-110 duration-200"
               key={index}
+              
               onClick={() => handleMobileClick(item)}
             >
               <div className="text-3xl">{menuIcons[index + 1]}</div>
@@ -90,3 +94,4 @@ const Navbar2 = ({ onMenuItemClick, onMobileMenuItemClick }) => {
 };
 
 export default Navbar2;
+

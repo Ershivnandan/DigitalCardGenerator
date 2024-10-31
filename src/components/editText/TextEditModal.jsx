@@ -13,8 +13,7 @@ const TextEditModal = ({ onSave, initialTitle, initialMessage }) => {
   const handleGenerateText = async () => {
     const apiKey = import.meta.env.VITE_AZURE_OPENAI_KEY;
     const openAiEndpoint = import.meta.env.VITE_OPENAI_ENDPOINT;
-    const endpoint =
-      `${openAiEndpoint}/openai/deployments/gpt-35-turbo/chat/completions?api-version=2024-05-01-preview`;
+    const endpoint = `${openAiEndpoint}/openai/deployments/gpt-35-turbo/chat/completions?api-version=2024-05-01-preview`;
 
     if (!theme) {
       alert("Please specify a theme for AI to generate a message!");
@@ -47,12 +46,12 @@ const TextEditModal = ({ onSave, initialTitle, initialMessage }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            "api-key": apiKey, 
+            "api-key": apiKey,
           },
         }
       );
 
-      const generatedText = response.data.choices[0].message.content.trim(); 
+      const generatedText = response.data.choices[0].message.content.trim();
       setMessage(generatedText);
     } catch (error) {
       console.error("Error generating text:", error);
@@ -100,9 +99,10 @@ const TextEditModal = ({ onSave, initialTitle, initialMessage }) => {
           rows="4"
         />
 
-        {/* Save Button */}
+        <div className="flex flex-col-reverse mt-5 gap-4">
+          {/* Save Button */}
         <button
-          className="absolute left-0 bottom-1 mt-4 w-full p-2 bg-blue-950 text-white rounded-md font-medium"
+          className="left-0 bottom-1 mt-4 w-full p-2 bg-blue-950 text-white rounded-md font-medium"
           onClick={handleSave}
         >
           Save
@@ -110,30 +110,29 @@ const TextEditModal = ({ onSave, initialTitle, initialMessage }) => {
 
         {/* AI Generate Button */}
         <button
-          className={`absolute left-0 bottom-16 w-full p-2 bg-green-600 text-white rounded-md font-medium flex justify-center items-center gap-2
-    ${
-      loading
-        ? "cursor-not-allowed opacity-70"
-        : "hover:bg-green-500 transition-all duration-200 ease-in-out"
-    }`}
+          className={` left-0 bottom-16 w-full p-2 bg-green-600 text-white rounded-md font-medium flex justify-center items-center gap-2
+          ${
+            loading
+              ? "cursor-not-allowed opacity-70"
+              : "hover:bg-green-500 transition-all duration-200 ease-in-out"
+          }`}
           onClick={handleGenerateText}
           disabled={loading}
         >
           {loading ? (
             <motion.span
-              animate={{ rotate: 360 }} 
+              animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 1 }}
             >
               <AiOutlineLoading3Quarters className="animate-spin text-xl" />{" "}
-              
             </motion.span>
           ) : (
             <>
-              <RiOpenaiFill className="text-xl" />{" "}
-              Generate with AI
+              <RiOpenaiFill className="text-xl" /> Generate with AI
             </>
           )}
         </button>
+        </div>
       </div>
     </div>
   );

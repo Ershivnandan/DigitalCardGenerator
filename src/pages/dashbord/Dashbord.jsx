@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import Cardtemplate from "../../components/Cardtemplate";
 import Navbar2 from "../../components/Navbar/Navbar2";
 import { toast } from "react-toastify";
-import { auth, storage,  db } from "../../utils/firebase";
+import { auth, storage, db } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
-
 import { useAuth } from "../../utils/AuthProvider";
-import ColorPickerModal from "../../components/colorpicker/ColorPickerModal"
+import ColorPickerModal from "../../components/colorpicker/ColorPickerModal";
 import ImageSelectionModal from "../../components/bgImage/ImageSelectionModal";
 import TextEditModal from "../../components/editText/TextEditModal";
 import FontModal from "../../components/fonts/FontModal";
@@ -117,12 +116,6 @@ const Dashbord = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const handleSwipeClose = (e) => {
-    const touch = e.changedTouches[0];
-    if (touch.clientX > window.innerWidth - 50) {
-      setIsDrawerOpen(false);
-    }
-  };
 
   const handleTextSize = (size) => {
     setTextSize(parseInt(size));
@@ -231,7 +224,7 @@ const Dashbord = () => {
         downloadURL = oldImageURL;
       }
 
-      // Updated card data
+    
       const newCardData = {
         title,
         message,
@@ -248,7 +241,7 @@ const Dashbord = () => {
         userId,
       };
 
-      // Update or set data in Realtime Database
+      
       await set(cardDbRef, newCardData);
 
       toast.success("Card saved successfully!");
@@ -294,13 +287,38 @@ const Dashbord = () => {
     fetchUserCardData();
   }, [currentUser]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isDrawerOpen) {
+        setIsDrawerOpen(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        console.log("chal gaya ");
+
+        setIsDrawerOpen(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isDrawerOpen]);
+
   return (
-    <div className="flex bg-gradient-to-r from-[#6a11cb] via-[#2575fc] to-[#f9d423] bg-600 animate-homeBg shadow-[2px_3px_45px_rgba(0,0,0,0.74)] min-h-screen">
+    <div className="flex bg-gradient-to-r overflow-x-hidden from-[#6a11cb] via-[#2575fc] to-[#f9d423] bg-600 animate-homeBg shadow-[2px_3px_45px_rgba(0,0,0,0.74)] min-h-screen">
       <Navbar2
         onMenuItemClick={handleMenuItemClick}
         onMobileMenuItemClick={handleDrawerClick}
+        setDrawerOpen={setIsDrawerOpen}
       />
-      <div className="my-auto md:w-1/2 w-[90%] h-full flex justify-center  mx-auto">
+      <div className="my-auto md:w-1/2 w-[90%] h-full flex justify-center  mx-auto ">
         <Cardtemplate
           title={title}
           message={message}
@@ -319,11 +337,12 @@ const Dashbord = () => {
 
       {/* Right Sidebar for editing */}
       <div
-        className={`md:w-[20%] sm:w-[50%] w-[80%] right-0 z-40 md:relative absolute overflow-x-hidden rounded-s-lg sm:h-screen h-[92vh]  m-0 p-0 bg-violet-600 ${
-          !isDrawerOpen ? "translate-x-0" : "translate-x-full"
-        } border-l border-gray-200 overflow-y-scroll`}
-        onTouchEnd={handleSwipeClose}
+        className={`fixed top-0 right-0 z-40 overflow-y-scroll h-screen  transition-transform bg-violet-600 w-72  ${
+          isDrawerOpen ? "translate-x-0" : "translate-x-full"
+        } md:translate-x-0 md:relative`}
+   
       >
+        {/* Drawer content */}
         {activeModal === "colorPicker" && (
           <ColorPickerModal
             onClose={() => setActiveModal(null)}

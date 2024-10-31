@@ -6,7 +6,7 @@ import { auth, storage,  db } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../utils/AuthProvider";
-import ColorPickerModal from "../../components/colorpicker/ColorPickerModal";
+import ColorPickerModal from "../../components/colorpicker/ColorPickerModal"
 import ImageSelectionModal from "../../components/bgImage/ImageSelectionModal";
 import TextEditModal from "../../components/editText/TextEditModal";
 import FontModal from "../../components/fonts/FontModal";

@@ -19,6 +19,7 @@ import {
 import html2canvas from "html2canvas";
 import { AiOutlineDownload } from "react-icons/ai";
 import { motion } from "framer-motion";
+import { FaWhatsapp } from "react-icons/fa";
 
 const Dashbord = () => {
   const { currentUser } = useAuth();
@@ -315,22 +316,30 @@ const Dashbord = () => {
   const cardRef = useRef();
 
   const handleDownloadCard = async (format) => {
-    try {
-      const element = cardRef.current;
-      
-      const canvas = await html2canvas(element);
-      const imageData = canvas.toDataURL(`image/${format}`);
-      const link = document.createElement("a");
-      link.href = imageData;
-      link.download = `card.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setIsDownloadListOpen(false);
-      toast.success("downloadStarted")
-    } catch (error) {
-      console.log(error.message);
-      toast.error("Cant download")
+    if (format === "whatsapp") {
+      try {
+        console.log("whatsapp sharing asked")
+      } catch (error) {
+        console.log(error.message)
+      }
+    } else {
+      try {
+        const element = cardRef.current;
+
+        const canvas = await html2canvas(element);
+        const imageData = canvas.toDataURL(`image/${format}`);
+        const link = document.createElement("a");
+        link.href = imageData;
+        link.download = `card.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setIsDownloadListOpen(false);
+        toast.success("downloadStarted");
+      } catch (error) {
+        console.log(error.message);
+        toast.error("Cant download");
+      }
     }
   };
 
@@ -443,6 +452,12 @@ const Dashbord = () => {
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:scale-110 duration-200"
             >
               JPEG
+            </button>
+            <button
+              onClick={() => handleDownloadCard("whatsapp")}
+              className=" w-full flex items-center gap-1 text-left px-4 py-2 text-sm text-gray-700 hover:scale-110 duration-200"
+            >
+              <FaWhatsapp className="text-lg" /> Share
             </button>
           </motion.div>
         )}

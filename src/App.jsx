@@ -5,6 +5,7 @@ import Dashbord from "./pages/dashbord/Dashbord";
 import Cardtemplate from "./components/Cardtemplate";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CardPreview from "./components/CardPreview";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
-
+        <Route path="/cardPreview/:id" element={<CardPreview />} />
         {/* Private Routes */}
         <Route
           path="/"

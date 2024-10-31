@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cardtemplate from "../../components/Cardtemplate";
 import Navbar2 from "../../components/Navbar/Navbar2";
 import { toast } from "react-toastify";
@@ -16,6 +16,9 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import html2canvas from "html2canvas";
+import { AiOutlineDownload } from "react-icons/ai";
+import { motion } from "framer-motion";
 
 const Dashbord = () => {
   const { currentUser } = useAuth();
@@ -43,6 +46,7 @@ const Dashbord = () => {
   const [activeModal, setActiveModal] = useState("colorPicker");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [localImage, setLocalImage] = useState(false);
+  const [isDownloadListOpen, setIsDownloadListOpen] = useState(false);
 
   const [cardData, setCardData] = useState({
     title: title,
@@ -115,7 +119,6 @@ const Dashbord = () => {
   const handleDrawerClick = (item) => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
 
   const handleTextSize = (size) => {
     setTextSize(parseInt(size));
@@ -224,7 +227,6 @@ const Dashbord = () => {
         downloadURL = oldImageURL;
       }
 
-    
       const newCardData = {
         title,
         message,
@@ -241,7 +243,6 @@ const Dashbord = () => {
         userId,
       };
 
-      
       await set(cardDbRef, newCardData);
 
       toast.success("Card saved successfully!");
@@ -311,6 +312,28 @@ const Dashbord = () => {
     };
   }, [isDrawerOpen]);
 
+  const cardRef = useRef();
+
+  const handleDownloadCard = async (format) => {
+    try {
+      const element = cardRef.current;
+      
+      const canvas = await html2canvas(element);
+      const imageData = canvas.toDataURL(`image/${format}`);
+      const link = document.createElement("a");
+      link.href = imageData;
+      link.download = `card.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setIsDownloadListOpen(false);
+      toast.success("downloadStarted")
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Cant download")
+    }
+  };
+
   return (
     <div className="flex bg-gradient-to-r overflow-x-hidden from-[#6a11cb] via-[#2575fc] to-[#f9d423] bg-600 animate-homeBg shadow-[2px_3px_45px_rgba(0,0,0,0.74)] min-h-screen">
       <Navbar2
@@ -332,6 +355,7 @@ const Dashbord = () => {
           textStrokeSize={textStrokeSize}
           textStrokeColor={textStrokeColor}
           borderImage={borderImage}
+          cardRef={cardRef}
         />
       </div>
 
@@ -340,7 +364,6 @@ const Dashbord = () => {
         className={`fixed top-0 right-0 z-40 overflow-y-scroll h-screen  transition-transform bg-violet-600 w-72  ${
           isDrawerOpen ? "translate-x-0" : "translate-x-full"
         } md:translate-x-0 md:relative`}
-   
       >
         {/* Drawer content */}
         {activeModal === "colorPicker" && (
@@ -390,6 +413,40 @@ const Dashbord = () => {
       >
         Save
       </button>
+
+      <div className="absolute md:bottom-10 bottom-28 sm:left-72 sm:right-auto right-5 border rounded-full p-2 bg-orange-500 text-white font-medium flex items-center ">
+        <button
+          className="flex gap-1 items-center text-sm"
+          onClick={() => setIsDownloadListOpen(!isDownloadListOpen)}
+        >
+          <AiOutlineDownload className="text-lg" />
+          Download
+        </button>
+
+        {/* Animated options list */}
+        {isDownloadListOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute z-30 bg-white rounded-lg shadow-lg  p-2 right-0 bottom-10"
+          >
+            <button
+              onClick={() => handleDownloadCard("png")}
+              className="block w-full text-left border border-b px-4 py-2 text-sm text-gray-700 hover:scale-110 duration-200"
+            >
+              PNG
+            </button>
+            <button
+              onClick={() => handleDownloadCard("jpeg")}
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:scale-110 duration-200"
+            >
+              JPEG
+            </button>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };

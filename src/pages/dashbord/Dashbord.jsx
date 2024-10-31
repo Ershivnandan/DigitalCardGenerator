@@ -1,18 +1,17 @@
-/* eslint-disable no-unused-vars */
+
 import { useEffect, useState } from "react";
 import Cardtemplate from "../../components/Cardtemplate";
 import Navbar2 from "../../components/Navbar/Navbar2";
 import { toast } from "react-toastify";
-import { auth, storage, firestore, db } from "../../utils/firebase";
+import { auth, storage,  db } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../utils/AuthProvider";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import ColorPickerModal from "../../components/colorpicker/ColorpickerModal";
+import ColorPickerModal from "../../components/colorpicker/ColorPickerModal";
 import ImageSelectionModal from "../../components/bgImage/ImageSelectionModal";
 import TextEditModal from "../../components/editText/TextEditModal";
 import FontModal from "../../components/fonts/FontModal";
-import { ref as dbRef, get, update, set } from "firebase/database";
+import { ref as dbRef, get, set } from "firebase/database";
 import {
   ref as storageRef,
   uploadBytes,
@@ -116,6 +115,7 @@ const Dashbord = () => {
   };
 
   const handleDrawerClick = (item) => {
+    console.log(item)
     setIsDrawerOpen(!isDrawerOpen);
   };
 

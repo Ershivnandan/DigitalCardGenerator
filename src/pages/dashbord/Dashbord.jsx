@@ -418,12 +418,12 @@ const Dashbord = () => {
 
       <button
         onClick={updateCard}
-        className="absolute md:bottom-10 bottom-28 sm:right-72 sm:left-auto left-5 border rounded-full p-2 bg-orange-500 text-white font-medium hover:scale-125 duration-150"
+        className="absolute z-30 md:bottom-10 bottom-28 sm:right-72 sm:left-auto left-5 border rounded-full p-2 bg-orange-500 text-white font-medium hover:scale-125 duration-150"
       >
         Save
       </button>
 
-      <div className="absolute md:bottom-10 bottom-28 sm:left-72 sm:right-auto right-5 border rounded-full p-2 bg-orange-500 text-white font-medium flex items-center ">
+      <div className="absolute z-30 md:bottom-10 bottom-28 sm:left-72 sm:right-auto right-5 border rounded-full p-2 bg-orange-500 text-white font-medium flex items-center ">
         <button
           className="flex gap-1 items-center text-sm"
           onClick={() => setIsDownloadListOpen(!isDownloadListOpen)}
@@ -439,7 +439,7 @@ const Dashbord = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute z-30 bg-white rounded-lg shadow-lg  p-2 right-0 bottom-10"
+            className="absolute  bg-white rounded-lg shadow-lg  p-2 right-0 bottom-10"
           >
             <button
               onClick={() => handleDownloadCard("png")}

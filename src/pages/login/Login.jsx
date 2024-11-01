@@ -32,7 +32,8 @@ const Login = () => {
       toast.success("Login successful!");
       navigate('/')
     } catch (error) {
-      console.error("Google Sign-In Error: ", error);
+      const mainError = error.code.split('/')[1];
+      toast.error(mainError);
     }
   };
 
@@ -63,7 +64,8 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      console.error("Auth Error: ", error);
+      const mainError = error.code.split('/')[1];
+      toast.error(mainError);
     }
   };
 

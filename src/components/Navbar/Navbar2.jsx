@@ -74,7 +74,7 @@ const Navbar2 = ({ onMenuItemClick, onMobileMenuItemClick, setDrawerOpen }) => {
       </div>
 
       {/* Mobile view: bottom nav */}
-      <div className="border w-full z-50 absolute bottom-0 md:hidden flex justify-around items-center bg-black p-3">
+      <div className="border w-full z-50 fixed bottom-0 md:hidden flex justify-around items-center bg-black p-3">
         <ul className="flex justify-between w-full">
           {menuItems.slice(1, -1).map((item, index) => (
             <li

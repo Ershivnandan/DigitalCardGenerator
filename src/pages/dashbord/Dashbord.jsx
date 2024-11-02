@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from "react";
 import Cardtemplate from "../../components/Cardtemplate";
 import Navbar2 from "../../components/Navbar/Navbar2";

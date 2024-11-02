@@ -299,7 +299,6 @@ const Dashbord = () => {
 
     const handleResize = () => {
       if (window.innerWidth > 768) {
-        console.log("chal gaya ");
 
         setIsDrawerOpen(true);
       }
